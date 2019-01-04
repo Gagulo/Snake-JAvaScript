@@ -1,16 +1,32 @@
 var snake;
 var grid = 20;
+var food;
 
 function setup() {
     createCanvas (600, 600);
     snake = new Snake();
     frameRate(10);
+    randomLocation();
+}
+
+function randomLocation() {
+    let cols = floor(width/grid);
+    let rows = floor(height/grid);
+    food = createVector(floor(random(cols)), floor(random(rows)));
+    food.mult(grid);
 }
 
 function draw() {
     background(51)
     snake.update();
     snake.show();
+
+    if (snake.eat(food)) {
+        randomLocation();
+    };
+
+    fill(255, 100, 100);
+    rect(food.x, food.y, grid, grid);
 }
 
 function keyPressed() {
@@ -30,6 +46,15 @@ function Snake() {
     this.y = 0;
     this.xspeed = 1;
     this.yspeed = 0;
+
+    this.eat = function (pos) {
+        let d = dist(this.x, this.y, pos.x, pos.y);
+        if ( d < 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     this.dir = function(x, y) {
         this.xspeed = x;
